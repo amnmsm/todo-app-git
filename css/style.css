@@ -25,6 +25,10 @@ body {
   border-radius: 4px;
 }
 
+.todo-form input[type="date"] {
+  flex: 0 0 auto;
+}
+
 .todo-form button {
   padding: 0.6rem 1rem;
   font-size: 1rem;
@@ -64,6 +68,17 @@ body {
 .todo-list li.done .todo-text {
   color: #888;
   text-decoration: line-through;
+}
+
+.todo-due {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.todo-due.overdue {
+  color: #dc2626;
+  font-weight: bold;
 }
 
 .todo-delete {

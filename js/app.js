@@ -5,9 +5,10 @@
 
   const form = document.getElementById('todo-form');
   const input = document.getElementById('todo-input');
+  const dueInput = document.getElementById('todo-due');
   const list = document.getElementById('todo-list');
 
-  // 状態: [{ id, text, done }]
+  // 状態: [{ id, text, done, due }]  due は 'YYYY-MM-DD' または ''
   let todos = load();
 
   function load() {
@@ -23,6 +24,7 @@
             id: t.id != null ? String(t.id) : String(Date.now() + i),
             text: t.text,
             done: t.done === true,
+            due: typeof t.due === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(t.due) ? t.due : '',
           };
         });
     } catch (e) {
@@ -59,16 +61,34 @@
     del.textContent = '削除';
     del.setAttribute('aria-label', '削除');
 
-    li.append(checkbox, span, del);
+    li.append(checkbox, span);
+
+    if (todo.due) {
+      const due = document.createElement('span');
+      due.className = 'todo-due';
+      due.textContent = '期限: ' + todo.due;
+      due.classList.toggle('overdue', !todo.done && todo.due < today());
+      li.append(due);
+    }
+
+    li.append(del);
     return li;
+  }
+
+  // ローカル日付を YYYY-MM-DD で返す
+  function today() {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + mm + '-' + dd;
   }
 
   function render() {
     list.replaceChildren(...todos.map(createItem));
   }
 
-  function addTodo(text) {
-    todos.push({ id: String(Date.now()) + Math.random().toString(36).slice(2, 8), text: text, done: false });
+  function addTodo(text, due) {
+    todos.push({ id: String(Date.now()) + Math.random().toString(36).slice(2, 8), text: text, done: false, due: due });
     save();
     render();
   }
@@ -100,8 +120,9 @@
     event.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    addTodo(text);
+    addTodo(text, dueInput.value);
     input.value = '';
+    dueInput.value = '';
     input.focus();
   });
 
