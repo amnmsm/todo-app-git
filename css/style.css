@@ -13,6 +13,7 @@ body {
 
 .todo-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
@@ -23,6 +24,10 @@ body {
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.todo-form input[type="date"] {
+  flex: 0 1 auto;
 }
 
 .todo-form button {
@@ -64,6 +69,30 @@ body {
 .todo-list li.done .todo-text {
   color: #888;
   text-decoration: line-through;
+}
+
+.todo-due {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.todo-due-input {
+  flex: 0 0 auto;
+  padding: 0.2rem;
+  font-size: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.todo-due-input.overdue {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.todo-due.overdue {
+  color: #dc2626;
+  font-weight: bold;
 }
 
 .todo-delete {
