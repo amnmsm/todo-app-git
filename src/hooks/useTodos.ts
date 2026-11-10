@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Todo } from '../types'
+import type { Section, Todo } from '../types'
 import { isValidDate } from '../lib/date'
 import { loadTodos, newId, saveTodos } from '../lib/storage'
 
@@ -11,7 +11,7 @@ export function useTodos() {
   }, [todos])
 
   const add = useCallback((text: string, due: string) => {
-    setTodos((prev) => [...prev, { id: newId(), text, done: false, due, memo: '' }])
+    setTodos((prev) => [...prev, { id: newId(), text, done: false, due, memo: '', section: 'todo' }])
   }, [])
 
   const toggle = useCallback((id: string) => {
@@ -50,9 +50,28 @@ export function useTodos() {
     })
   }, [])
 
+  const moveToSection = useCallback((id: string, section: Section, beforeId?: string) => {
+    setTodos((prev) => {
+      const item = prev.find((t) => t.id === id)
+      if (!item) return prev
+      const rest = prev.filter((t) => t.id !== id)
+      const moved = { ...item, section }
+      const at = beforeId ? rest.findIndex((t) => t.id === beforeId) : -1
+      if (at < 0) {
+        // 末尾 = 対象セクションの最後の要素の直後
+        let last = -1
+        rest.forEach((t, i) => {
+          if (t.section === section) last = i
+        })
+        rest.splice(last + 1, 0, moved)
+      } else rest.splice(at, 0, moved)
+      return rest
+    })
+  }, [])
+
   const clearDone = useCallback(() => {
     setTodos((prev) => prev.filter((t) => !t.done))
   }, [])
 
-  return { todos, add, toggle, remove, setDue, setMemo, edit, move, clearDone }
+  return { todos, add, toggle, remove, setDue, setMemo, edit, move, moveToSection, clearDone }
 }

@@ -7,7 +7,7 @@ import { TodoItem } from './TodoItem'
 import type { Todo } from '../types'
 
 function setup(todo: Partial<Todo> = {}, sortable = true) {
-  const t: Todo = { id: '1', text: '牛乳', done: false, due: '', memo: '', ...todo }
+  const t: Todo = { id: '1', text: '牛乳', done: false, due: '', memo: '', section: 'todo', ...todo }
   const h = { onToggle: vi.fn(), onRemove: vi.fn(), onSetDue: vi.fn(), onSetMemo: vi.fn(), onEdit: vi.fn() }
   render(
     <DndContext>

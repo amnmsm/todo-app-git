@@ -1,4 +1,5 @@
 import type { Todo } from '../types'
+import { isSection } from '../types'
 import { isValidDate } from './date'
 
 const STORAGE_KEY = 'todos'
@@ -20,6 +21,7 @@ export function loadTodos(): Todo[] {
         done: t.done === true,
         due: isValidDate(t.due) ? t.due : '',
         memo: typeof t.memo === 'string' ? t.memo : '',
+        section: isSection(t.section) ? t.section : 'todo',
       }))
   } catch {
     return []
