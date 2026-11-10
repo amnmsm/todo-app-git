@@ -76,4 +76,28 @@ describe('useTodos', () => {
     const h2 = renderHook(() => useTodos())
     expect(h2.result.current.todos.map((t) => t.text)).toEqual(['a', 'b', 'c'])
   })
+  it('adds into the todo section', () => {
+    const h = setup()
+    expect(h.result.current.todos.every((t) => t.section === 'todo')).toBe(true)
+  })
+  it('moveToSection appends to the end of the target section', () => {
+    const h = setup()
+    const [a, b] = h.result.current.todos
+    act(() => h.result.current.moveToSection(a.id, 'doing'))
+    act(() => h.result.current.moveToSection(b.id, 'doing'))
+    const t = h.result.current.todos
+    expect(t.find((x) => x.id === a.id)!.section).toBe('doing')
+    expect(t.filter((x) => x.section === 'doing').map((x) => x.text)).toEqual(['a', 'b'])
+    expect(JSON.parse(localStorage.getItem('todos')!).find((x: { id: string }) => x.id === a.id).section).toBe('doing')
+  })
+  it('moveToSection inserts before beforeId and ignores unknown ids', () => {
+    const h = setup()
+    const [a, , c] = h.result.current.todos
+    act(() => h.result.current.moveToSection(c.id, 'doing'))
+    act(() => h.result.current.moveToSection(a.id, 'doing', c.id))
+    expect(h.result.current.todos.filter((x) => x.section === 'doing').map((x) => x.text)).toEqual(['a', 'c'])
+    const before = h.result.current.todos
+    act(() => h.result.current.moveToSection('nope', 'doing'))
+    expect(h.result.current.todos).toBe(before)
+  })
 })

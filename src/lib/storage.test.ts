@@ -3,7 +3,7 @@ import { loadTodos, newId, saveTodos } from './storage'
 
 describe('storage', () => {
   it('round-trips todos', () => {
-    const todos = [{ id: 'a', text: 'x', done: true, due: '2026-01-01', memo: 'm' }]
+    const todos = [{ id: 'a', text: 'x', done: true, due: '2026-01-01', memo: 'm', section: 'doing' as const }]
     saveTodos(todos)
     expect(loadTodos()).toEqual(todos)
   })
@@ -21,7 +21,7 @@ describe('storage', () => {
     )
     const r = loadTodos()
     expect(r).toHaveLength(2)
-    expect(r[0]).toEqual({ id: '5', text: 'ok', done: false, due: '', memo: '' })
+    expect(r[0]).toEqual({ id: '5', text: 'ok', done: false, due: '', memo: '', section: 'todo' })
     expect(r[1].id).toBeTruthy()
     expect(r[1].text).toBe('noid')
   })
@@ -45,5 +45,17 @@ describe('storage', () => {
   })
   it('newId is unique', () => {
     expect(new Set(Array.from({ length: 50 }, newId)).size).toBe(50)
+  })
+  it('keeps valid section and defaults invalid/legacy to todo', () => {
+    localStorage.setItem(
+      'todos',
+      JSON.stringify([
+        { id: 'a', text: 'x', section: 'doing' },
+        { id: 'b', text: 'y', section: 'complete' },
+        { id: 'c', text: 'z', section: 'bogus' },
+        { id: 'd', text: 'w' },
+      ]),
+    )
+    expect(loadTodos().map((t) => t.section)).toEqual(['doing', 'complete', 'todo', 'todo'])
   })
 })

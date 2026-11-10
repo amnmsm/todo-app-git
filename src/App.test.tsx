@@ -36,7 +36,7 @@ describe('App', () => {
     expect(screen.getByText('完了した TODO はありません')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'すべて' }))
-    expect(within(screen.getByRole('list')).getAllByRole('listitem')).toHaveLength(1)
+    expect(screen.getAllByRole('listitem')).toHaveLength(1)
   })
   it('shows empty message for active filter', async () => {
     render(<App />)
@@ -55,5 +55,17 @@ describe('App', () => {
     render(<App />)
     await userEvent.click(screen.getByRole('button', { name: 'ダークモードに切り替え' }))
     expect(document.documentElement).toHaveClass('dark')
+  })
+  it('switches between list and kanban views and remembers it', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<App />)
+    await add(user, 'one')
+    expect(screen.queryByTestId('board')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'カンバン' }))
+    expect(screen.getByTestId('board')).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: '未着手' })).getByText('one')).toBeInTheDocument()
+    unmount()
+    render(<App />)
+    expect(screen.getByTestId('board')).toBeInTheDocument()
   })
 })
