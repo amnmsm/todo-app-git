@@ -85,6 +85,11 @@ body {
   border-radius: 4px;
 }
 
+.todo-due-input.overdue {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
 .todo-due.overdue {
   color: #dc2626;
   font-weight: bold;
