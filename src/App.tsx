@@ -15,7 +15,7 @@ const EMPTY: Record<Filter, string> = {
 }
 
 export default function App() {
-  const { todos, add, toggle, remove, setDue, edit, move, clearDone } = useTodos()
+  const { todos, add, toggle, remove, setDue, setMemo, edit, move, clearDone } = useTodos()
   const today = useToday()
   const { dark, toggle: toggleTheme } = useDarkMode()
   const [filter, setFilter] = useState<Filter>('all')
@@ -45,6 +45,7 @@ export default function App() {
         onToggle={toggle}
         onRemove={remove}
         onSetDue={setDue}
+        onSetMemo={setMemo}
         onEdit={edit}
         onMove={move}
       />

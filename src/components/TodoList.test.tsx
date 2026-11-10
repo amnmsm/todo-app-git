@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { TodoList } from './TodoList'
 
-const handlers = { onToggle: vi.fn(), onRemove: vi.fn(), onSetDue: vi.fn(), onEdit: vi.fn(), onMove: vi.fn() }
+const handlers = { onToggle: vi.fn(), onRemove: vi.fn(), onSetDue: vi.fn(), onSetMemo: vi.fn(), onEdit: vi.fn(), onMove: vi.fn() }
 
 describe('TodoList', () => {
   it('shows empty message', () => {
@@ -12,8 +12,8 @@ describe('TodoList', () => {
   })
   it('renders items and forwards handlers', async () => {
     const todos = [
-      { id: '1', text: 'a', done: false, due: '' },
-      { id: '2', text: 'b', done: false, due: '' },
+      { id: '1', text: 'a', done: false, due: '', memo: '' },
+      { id: '2', text: 'b', done: false, due: '', memo: '' },
     ]
     render(<TodoList todos={todos} today="2026-01-01" sortable emptyMessage="" {...handlers} />)
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
@@ -22,8 +22,8 @@ describe('TodoList', () => {
   })
   it('reorders via keyboard', async () => {
     const todos = [
-      { id: '1', text: 'a', done: false, due: '' },
-      { id: '2', text: 'b', done: false, due: '' },
+      { id: '1', text: 'a', done: false, due: '', memo: '' },
+      { id: '2', text: 'b', done: false, due: '', memo: '' },
     ]
     const onMove = vi.fn()
     render(<TodoList todos={todos} today="2026-01-01" sortable emptyMessage="" {...handlers} onMove={onMove} />)

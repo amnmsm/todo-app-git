@@ -3,7 +3,7 @@ import { loadTodos, newId, saveTodos } from './storage'
 
 describe('storage', () => {
   it('round-trips todos', () => {
-    const todos = [{ id: 'a', text: 'x', done: true, due: '2026-01-01' }]
+    const todos = [{ id: 'a', text: 'x', done: true, due: '2026-01-01', memo: 'm' }]
     saveTodos(todos)
     expect(loadTodos()).toEqual(todos)
   })
@@ -21,9 +21,15 @@ describe('storage', () => {
     )
     const r = loadTodos()
     expect(r).toHaveLength(2)
-    expect(r[0]).toEqual({ id: '5', text: 'ok', done: false, due: '' })
+    expect(r[0]).toEqual({ id: '5', text: 'ok', done: false, due: '', memo: '' })
     expect(r[1].id).toBeTruthy()
     expect(r[1].text).toBe('noid')
+  })
+  it('keeps string memo and defaults otherwise', () => {
+    localStorage.setItem('todos', JSON.stringify([{ id: 'a', text: 'x', memo: 'hi' }, { id: 'b', text: 'y', memo: 3 }]))
+    const r = loadTodos()
+    expect(r[0].memo).toBe('hi')
+    expect(r[1].memo).toBe('')
   })
   it('ignores storage errors', () => {
     const get = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {

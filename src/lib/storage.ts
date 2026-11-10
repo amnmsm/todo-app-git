@@ -19,6 +19,7 @@ export function loadTodos(): Todo[] {
         text: t.text as string,
         done: t.done === true,
         due: isValidDate(t.due) ? t.due : '',
+        memo: typeof t.memo === 'string' ? t.memo : '',
       }))
   } catch {
     return []

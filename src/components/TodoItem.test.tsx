@@ -7,8 +7,8 @@ import { TodoItem } from './TodoItem'
 import type { Todo } from '../types'
 
 function setup(todo: Partial<Todo> = {}, sortable = true) {
-  const t: Todo = { id: '1', text: '牛乳', done: false, due: '', ...todo }
-  const h = { onToggle: vi.fn(), onRemove: vi.fn(), onSetDue: vi.fn(), onEdit: vi.fn() }
+  const t: Todo = { id: '1', text: '牛乳', done: false, due: '', memo: '', ...todo }
+  const h = { onToggle: vi.fn(), onRemove: vi.fn(), onSetDue: vi.fn(), onSetMemo: vi.fn(), onEdit: vi.fn() }
   render(
     <DndContext>
       <SortableContext items={[t.id]}>
@@ -22,6 +22,24 @@ function setup(todo: Partial<Todo> = {}, sortable = true) {
 }
 
 describe('TodoItem', () => {
+  it('toggles memo editor and reports changes', async () => {
+    const h = setup()
+    expect(screen.queryByLabelText('「牛乳」のメモ')).not.toBeInTheDocument()
+    const btn = screen.getByRole('button', { name: '「牛乳」のメモを開く' })
+    expect(btn).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(btn)
+    expect(btn).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.type(screen.getByLabelText('「牛乳」のメモ'), 'a')
+    expect(h.onSetMemo).toHaveBeenCalledWith('1', 'a')
+  })
+  it('shows existing memo when opened and marks the button', async () => {
+    setup({ memo: '2%を買う' })
+    const btn = screen.getByRole('button', { name: '「牛乳」のメモを開く' })
+    expect(btn).toHaveAttribute('data-has-memo', 'true')
+    await userEvent.click(btn)
+    expect(screen.getByLabelText('「牛乳」のメモ')).toHaveValue('2%を買う')
+  })
+
   it('toggles and removes', async () => {
     const h = setup()
     await userEvent.click(screen.getByLabelText('完了'))
