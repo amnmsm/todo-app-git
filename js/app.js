@@ -70,6 +70,12 @@
       due.textContent = (overdue ? '⚠ 期限切れ: ' : '期限: ') + todo.due;
       due.classList.toggle('overdue', overdue);
       li.append(due);
+    } else {
+      const dueInputEl = document.createElement('input');
+      dueInputEl.type = 'date';
+      dueInputEl.className = 'todo-due-input';
+      dueInputEl.setAttribute('aria-label', '期日を設定');
+      li.append(dueInputEl);
     }
 
     li.append(del);
@@ -94,15 +100,22 @@
     render();
   }
 
-  // イベント委譲: 完了の切り替えと削除
+  // イベント委譲: 完了の切り替え・期日の後付け・削除
   list.addEventListener('change', function (event) {
-    if (!event.target.classList.contains('todo-check')) return;
+    const isCheck = event.target.classList.contains('todo-check');
+    const isDue = event.target.classList.contains('todo-due-input');
+    if (!isCheck && !isDue) return;
     const id = event.target.closest('li').dataset.id;
     const todo = todos.find(function (t) {
       return t.id === id;
     });
     if (!todo) return;
-    todo.done = event.target.checked;
+    if (isCheck) {
+      todo.done = event.target.checked;
+    } else {
+      if (!event.target.value) return;
+      todo.due = event.target.value;
+    }
     save();
     render();
   });

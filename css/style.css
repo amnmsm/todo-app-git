@@ -77,6 +77,14 @@ body {
   white-space: nowrap;
 }
 
+.todo-due-input {
+  flex: 0 0 auto;
+  padding: 0.2rem;
+  font-size: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .todo-due.overdue {
   color: #dc2626;
   font-weight: bold;
