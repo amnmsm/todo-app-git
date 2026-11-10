@@ -13,6 +13,7 @@ body {
 
 .todo-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
@@ -26,7 +27,7 @@ body {
 }
 
 .todo-form input[type="date"] {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
 }
 
 .todo-form button {

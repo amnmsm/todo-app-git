@@ -66,8 +66,9 @@
     if (todo.due) {
       const due = document.createElement('span');
       due.className = 'todo-due';
-      due.textContent = '期限: ' + todo.due;
-      due.classList.toggle('overdue', !todo.done && todo.due < today());
+      const overdue = !todo.done && todo.due < today();
+      due.textContent = (overdue ? '⚠ 期限切れ: ' : '期限: ') + todo.due;
+      due.classList.toggle('overdue', overdue);
       li.append(due);
     }
 
@@ -124,6 +125,11 @@
     input.value = '';
     dueInput.value = '';
     input.focus();
+  });
+
+  // 日付をまたいだ後にタブへ戻ったとき、期限切れ表示を更新する
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') render();
   });
 
   render();
