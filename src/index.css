@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@keyframes todo-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.todo-enter {
+  animation: todo-in 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .todo-enter {
+    animation: none;
+  }
+}
+
+body {
+  @apply bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+}

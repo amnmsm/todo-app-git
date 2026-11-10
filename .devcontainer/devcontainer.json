@@ -2,5 +2,9 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
   "remoteUser": "vscode",
   "containerUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "lts" }
+  },
+  "forwardPorts": [5173],
   "postCreateCommand": "bash -lc 'curl -fsSL https://claude.ai/install.sh | bash'"
 }
