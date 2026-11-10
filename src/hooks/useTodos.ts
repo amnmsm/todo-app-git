@@ -11,7 +11,7 @@ export function useTodos() {
   }, [todos])
 
   const add = useCallback((text: string, due: string) => {
-    setTodos((prev) => [...prev, { id: newId(), text, done: false, due }])
+    setTodos((prev) => [...prev, { id: newId(), text, done: false, due, memo: '' }])
   }, [])
 
   const toggle = useCallback((id: string) => {
@@ -26,6 +26,10 @@ export function useTodos() {
   const setDue = useCallback((id: string, due: string) => {
     if (due && !isValidDate(due)) return
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, due } : t)))
+  }, [])
+
+  const setMemo = useCallback((id: string, memo: string) => {
+    setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, memo } : t)))
   }, [])
 
   const edit = useCallback((id: string, text: string) => {
@@ -50,5 +54,5 @@ export function useTodos() {
     setTodos((prev) => prev.filter((t) => !t.done))
   }, [])
 
-  return { todos, add, toggle, remove, setDue, edit, move, clearDone }
+  return { todos, add, toggle, remove, setDue, setMemo, edit, move, clearDone }
 }

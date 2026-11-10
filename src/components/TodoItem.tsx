@@ -11,11 +11,13 @@ interface Props {
   onToggle: (id: string) => void
   onRemove: (id: string) => void
   onSetDue: (id: string, due: string) => void
+  onSetMemo: (id: string, memo: string) => void
   onEdit: (id: string, text: string) => void
 }
 
-export function TodoItem({ todo, today, sortable, onToggle, onRemove, onSetDue, onEdit }: Props) {
+export function TodoItem({ todo, today, sortable, onToggle, onRemove, onSetDue, onSetMemo, onEdit }: Props) {
   const [editing, setEditing] = useState(false)
+  const [memoOpen, setMemoOpen] = useState(false)
   const [draft, setDraft] = useState(todo.text)
   const cancelled = useRef(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -48,7 +50,7 @@ export function TodoItem({ todo, today, sortable, onToggle, onRemove, onSetDue, 
     <li
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`todo-enter flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 shadow-sm [overflow-wrap:anywhere] dark:bg-slate-800 ${
+      className={`todo-enter flex flex-wrap items-center gap-2 rounded-xl bg-white px-3 py-2.5 shadow-sm [overflow-wrap:anywhere] dark:bg-slate-800 ${
         isDragging ? 'relative z-10 shadow-lg ring-2 ring-blue-500/50' : ''
       }`}
     >
@@ -109,12 +111,34 @@ export function TodoItem({ todo, today, sortable, onToggle, onRemove, onSetDue, 
       />
       <button
         type="button"
+        onClick={() => setMemoOpen((o) => !o)}
+        aria-label={`「${todo.text}」のメモを開く`}
+        aria-expanded={memoOpen}
+        data-has-memo={todo.memo !== ''}
+        className={`rounded-md px-1.5 py-1 text-sm transition hover:bg-slate-100 dark:hover:bg-slate-700 ${
+          todo.memo ? '' : 'opacity-40'
+        }`}
+      >
+        📝
+      </button>
+      <button
+        type="button"
         onClick={() => onRemove(todo.id)}
         aria-label="削除"
         className="rounded-md bg-red-600 px-2.5 py-1 text-sm text-white transition hover:bg-red-700 active:scale-95"
       >
         削除
       </button>
+      {memoOpen && (
+        <textarea
+          value={todo.memo}
+          onChange={(e) => onSetMemo(todo.id, e.target.value)}
+          aria-label={`「${todo.text}」のメモ`}
+          placeholder="メモ"
+          rows={3}
+          className="basis-full rounded border border-slate-300 bg-transparent px-2 py-1 text-sm dark:border-slate-600"
+        />
+      )}
     </li>
   )
 }

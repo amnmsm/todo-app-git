@@ -13,6 +13,7 @@ interface Props {
   onToggle: (id: string) => void
   onRemove: (id: string) => void
   onSetDue: (id: string, due: string) => void
+  onSetMemo: (id: string, memo: string) => void
   onEdit: (id: string, text: string) => void
   onMove: (fromId: string, toId: string) => void
 }

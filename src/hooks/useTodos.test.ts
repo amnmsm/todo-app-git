@@ -19,6 +19,15 @@ describe('useTodos', () => {
     expect(texts(h)).toEqual(['a', 'b', 'c'])
     expect(h.result.current.todos[1]).toMatchObject({ done: false, due: '2026-01-01' })
   })
+  it('adds with empty memo and setMemo updates only the target', () => {
+    const h = setup()
+    expect(h.result.current.todos.every((t) => t.memo === '')).toBe(true)
+    act(() => h.result.current.setMemo(h.result.current.todos[1].id, 'note\nline2'))
+    expect(h.result.current.todos.map((t) => t.memo)).toEqual(['', 'note\nline2', ''])
+    expect(JSON.parse(localStorage.getItem('todos')!)[1].memo).toBe('note\nline2')
+    act(() => h.result.current.setMemo(h.result.current.todos[1].id, ''))
+    expect(h.result.current.todos[1].memo).toBe('')
+  })
   it('toggles and removes', () => {
     const h = setup()
     const [a, b] = h.result.current.todos
